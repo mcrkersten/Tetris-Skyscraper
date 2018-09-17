@@ -47,8 +47,8 @@ public class PlayerController : MonoBehaviour {
 
     //Gets current position and moves it down every frame (hoeveelheid is gedeelt door framesnelheid)
     private void MoveBlock() {
-        float move = 0.0001f;
-        if (Input.GetKey("down")){ move = 0.0005f; }
+        float move = 0.025f * Time.deltaTime;
+        if (Input.GetKey("down")){ move = 0.15f * Time.deltaTime; }
         Vector3 localPosition = currentBlock.gameObject.transform.localPosition;
         currentBlock.gameObject.transform.localPosition = new Vector3(0, currentBlock.gameObject.transform.localPosition.y - (move / Time.deltaTime), 0);
     }

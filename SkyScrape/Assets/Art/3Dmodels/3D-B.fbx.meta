@@ -4,11 +4,26 @@ ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Building
+    100004: Window1
+    100006: Window2
     400000: //RootNode
+    400002: Building
+    400004: Window1
+    400006: Window2
     2100000: lambert1
     2300000: //RootNode
+    2300002: Building
+    2300004: Window1
+    2300006: Window2
     3300000: //RootNode
+    3300002: Building
+    3300004: Window1
+    3300006: Window2
     4300000: polySurface8
+    4300002: Window1
+    4300004: Window2
+    4300006: Building
   externalObjects: {}
   materials:
     importMaterials: 1

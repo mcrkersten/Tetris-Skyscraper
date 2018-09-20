@@ -300,11 +300,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scrips\Block.cs" />
-    <Compile Include="Assets\Scrips\Block16.cs" />
-    <Compile Include="Assets\Scrips\BlockQueue.cs" />
-    <Compile Include="Assets\Scrips\PlayerController.cs" />
-    <Compile Include="Assets\Scrips\Tower.cs" />
+    <Compile Include="Assets\Scrips\2D\Block.cs" />
+    <Compile Include="Assets\Scrips\2D\Block16.cs" />
+    <Compile Include="Assets\Scrips\2D\BlockQueue.cs" />
+    <Compile Include="Assets\Scrips\2D\PlayerController.cs" />
+    <Compile Include="Assets\Scrips\2D\Tower.cs" />
+    <Compile Include="Assets\Scrips\3D\Block3D.cs" />
+    <Compile Include="Assets\Scrips\3D\BlockQueue3D.cs" />
+    <Compile Include="Assets\Scrips\3D\PlayerController3D.cs" />
+    <Compile Include="Assets\Scrips\3D\Tower3D.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="C:\Users\Gebruiker\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Resources\Styles\Main_Dark.uss" />

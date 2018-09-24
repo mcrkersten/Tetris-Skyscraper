@@ -31,6 +31,7 @@ public class BlockQueue3D : MonoBehaviour {
         int i = 0;
         foreach (GameObject block in blockQueue) {
             block.transform.position = queuePosition[i].transform.position;
+            block.GetComponent<Block3D>().hit = false;
             i++;
         }
     }

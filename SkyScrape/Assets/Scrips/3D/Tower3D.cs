@@ -7,7 +7,7 @@ public class Tower3D : MonoBehaviour {
     public List<GameObject> playedBlocks = new List<GameObject>();
     public PlayerController3D player;
 
-    private int lives = 5;
+    private int lives = 1;
 
 
     public int GetScore() {
@@ -28,6 +28,9 @@ public class Tower3D : MonoBehaviour {
 
     private void OnTriggerEnter(Collider collision) {
         lives = lives - 1;
-        if (lives < 0) { EndPlayerGame(); }
+        if (lives < 0) {
+            EndPlayerGame();
+            this.gameObject.GetComponent<Collider>().enabled = false;
+        }
     }
 }

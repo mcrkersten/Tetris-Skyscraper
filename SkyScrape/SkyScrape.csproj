@@ -306,6 +306,7 @@
     <Compile Include="Assets\Scrips\2D\PlayerController.cs" />
     <Compile Include="Assets\Scrips\2D\Tower.cs" />
     <Compile Include="Assets\Scrips\3D\Block3D.cs" />
+    <Compile Include="Assets\Scrips\3D\BlockCube.cs" />
     <Compile Include="Assets\Scrips\3D\BlockQueue3D.cs" />
     <Compile Include="Assets\Scrips\3D\PlayerController3D.cs" />
     <Compile Include="Assets\Scrips\3D\Tower3D.cs" />

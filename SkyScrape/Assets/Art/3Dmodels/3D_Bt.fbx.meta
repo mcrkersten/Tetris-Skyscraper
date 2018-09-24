@@ -20,6 +20,8 @@ ModelImporter:
     100028: Window7
     100030: Window8
     100032: Windows
+    100034: Window10
+    100036: Window9
     400000: //RootNode
     400002: Building2
     400004: Building2 1
@@ -37,6 +39,8 @@ ModelImporter:
     400028: Window7
     400030: Window8
     400032: Windows
+    400034: Window10
+    400036: Window9
     2100000: lambert1
     2300000: Building2
     2300002: //RootNode
@@ -48,6 +52,8 @@ ModelImporter:
     2300014: Window6
     2300016: Window7
     2300018: Window8
+    2300020: Window10
+    2300022: Window9
     3300000: Building2
     3300002: //RootNode
     3300004: Window1
@@ -58,6 +64,8 @@ ModelImporter:
     3300014: Window6
     3300016: Window7
     3300018: Window8
+    3300020: Window10
+    3300022: Window9
     4300000: Building2
     4300002: Window1
     4300004: Window2
@@ -67,6 +75,8 @@ ModelImporter:
     4300012: Window6
     4300014: Window7
     4300016: Window8
+    4300018: Window9
+    4300020: Window10
   externalObjects: {}
   materials:
     importMaterials: 1

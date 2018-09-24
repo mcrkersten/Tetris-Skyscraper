@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Block3D : MonoBehaviour {
 
-    public GameObject[] model;
     public bool hit = false;
     protected List<GameObject> localModels = new List<GameObject>();
     protected Rigidbody rigid;
@@ -45,59 +44,40 @@ public class Block3D : MonoBehaviour {
 
     //Lock Rigidbody and change sprite
     public virtual void EndGameLock() {
-        float lenght = .70f;
-        int layerMask = 1 << 8;
-        layerMask = ~layerMask;
+        rigid.constraints = RigidbodyConstraints.FreezeAll;
         if (rigid.velocity.magnitude < 1f) {
-
             foreach (GameObject block in localModels) {
-                rigid.constraints = RigidbodyConstraints.FreezeAll;
-                block.GetComponent<Collider>().enabled = false;
-                Vector3 neighbours = new Vector3(0, 0, 0);
+                this.gameObject.transform.position = new Vector3((float)System.Math.Round(this.gameObject.transform.position.x, 1),
+                                                        (float)System.Math.Round(this.gameObject.transform.position.y, 1),
+                                                        (float)System.Math.Round(this.gameObject.transform.position.z, 1));
 
-                RaycastHit hitL;
-                if (Physics.Raycast(block.transform.position, block.transform.TransformDirection(Vector3.left), out hitL, lenght, layerMask)) {
-                    if (hitL.distance <= lenght) {
-                        neighbours = new Vector3(-1, neighbours.y, neighbours.z);
-                    }
-                }
-                RaycastHit hitR;
-                if (Physics.Raycast(block.transform.position, block.transform.TransformDirection(Vector3.right), out hitR, lenght, layerMask)) {
-                    if (hitR.distance <= lenght) {
-                        //Check if object is at left hand if none set to 1 else -2
-                        if(neighbours == new Vector3(-1, neighbours.y, neighbours.z)) {
-                            neighbours = new Vector3(2, neighbours.y, neighbours.z);
-                        }
-                        else {
-                            neighbours = new Vector3(1, neighbours.y, neighbours.z);
-                        }           
-                    }
-                }
-                RaycastHit hitForward;
-                if (Physics.Raycast(block.transform.position, block.transform.TransformDirection(Vector3.forward), out hitForward, lenght, layerMask)) {
-                    if (hitForward.distance <= lenght) {
-                        neighbours = new Vector3(neighbours.x, neighbours.y, 1);
-                    }
-                }
-                RaycastHit hitBack;
-                if (Physics.Raycast(block.transform.position, block.transform.TransformDirection(Vector3.back), out hitBack, lenght, layerMask)) {
-                    if (hitForward.distance <= lenght) {
-                        if(neighbours == new Vector3(neighbours.x, neighbours.y, 1)) {
-                            neighbours = new Vector3(neighbours.x, neighbours.y, 2);
-                        }
-                        else {
-                            neighbours = new Vector3(neighbours.x, neighbours.y, -1);
-                        }                    
-                    }
-                }
+                this.gameObject.transform.eulerAngles = new Vector3((float)System.Math.Round(this.gameObject.transform.eulerAngles.x, 1),
+                                                        (float)System.Math.Round(this.gameObject.transform.eulerAngles.y, 1),
+                                                        (float)System.Math.Round(this.gameObject.transform.eulerAngles.z, 1));
 
-                //No Ground floor
-                block.GetComponent<Collider>().enabled = true;
-                print(neighbours);
+                block.GetComponent<BlockCube>().ReturnModel();
+                print("Ik kom er langs");
             }
             //Sets te blocks on lines
-            this.transform.position = position;
-            //this.transform.eulerAngles = new Vector3(0, 0, Mathf.Round(this.transform.eulerAngles.z));
+            //this.transform.position = position;
         }
+    }
+
+
+    public bool CheckMovePosition(Vector3 side, bool detectSelf) {
+        float lenght = .85f;
+        int layerMask = 1 << 8;
+        layerMask = ~layerMask;
+        RaycastHit hit;
+        //Fire a raycast and continue if it hit a collision.
+        foreach (GameObject child in localModels) {
+            if (Physics.Raycast(child.transform.position, transform.TransformDirection(side), out hit, lenght, layerMask)) {
+                //if the collision that is hit by the raycast is not from a child inside the parent object, stop the procces and return a false.
+                if (!hit.collider.transform.IsChildOf(this.gameObject.transform) && detectSelf == false) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

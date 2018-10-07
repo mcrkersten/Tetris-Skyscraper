@@ -305,11 +305,16 @@
     <Compile Include="Assets\Scrips\2D\BlockQueue.cs" />
     <Compile Include="Assets\Scrips\2D\PlayerController.cs" />
     <Compile Include="Assets\Scrips\2D\Tower.cs" />
-    <Compile Include="Assets\Scrips\3D\Block3D.cs" />
-    <Compile Include="Assets\Scrips\3D\BlockCube.cs" />
-    <Compile Include="Assets\Scrips\3D\BlockQueue3D.cs" />
-    <Compile Include="Assets\Scrips\3D\PlayerController3D.cs" />
-    <Compile Include="Assets\Scrips\3D\Tower3D.cs" />
+    <Compile Include="Assets\Scrips\3D(Legacy)\Block3D.cs" />
+    <Compile Include="Assets\Scrips\3D(Legacy)\BlockCube.cs" />
+    <Compile Include="Assets\Scrips\3D(Legacy)\BlockQueue3D.cs" />
+    <Compile Include="Assets\Scrips\3D(Legacy)\PlayerController3D.cs" />
+    <Compile Include="Assets\Scrips\3D(Legacy)\Tower3D.cs" />
+    <Compile Include="Assets\Scrips\3D\BlockQueue.cs" />
+    <Compile Include="Assets\Scrips\3D\PlayerController.cs" />
+    <Compile Include="Assets\Scrips\3D\SingleBlock.cs" />
+    <Compile Include="Assets\Scrips\3D\TetrisBlock.cs" />
+    <Compile Include="Assets\Scrips\3D\Tower.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="C:\Users\Gebruiker\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Resources\Styles\Main_Dark.uss" />

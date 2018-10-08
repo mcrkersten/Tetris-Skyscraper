@@ -70,7 +70,12 @@ namespace Version3D {
 
 
         private void PlayerMovement() {
-
+            if (Input.GetKeyDown(KeyCode.A) && gameObject.transform.position.x > -levelSize) {       //Move Left on A-press | LEFT
+                gameObject.transform.position = new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+            }
+            if(Input.GetKeyDown(KeyCode.D) && gameObject.transform.position.x < levelSize) {         //Move right on D-press | RIGHT
+                gameObject.transform.position = new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Version3D {
 
         private float moveAmount = 1.6f;
         private float levelSize = 2.4f;
-
+        private Vector3 rot = new Vector3(0,0,0);
         public Tower tower;
         public BlockQueue blockQueue;
         private GameObject currentBlock;
@@ -41,6 +41,12 @@ namespace Version3D {
         }
 
 
+        private void Update() {
+            PlayerMovement();
+            PlayerRotation();
+        }
+
+
         public void NextBlock() {
             TetrisBlock.OnColissionEvent += ReleaseBlock;                   //Subscribe < Listen to blockQueue
             currentBlock = blockQueue.GetNextBlock();                       //Get next block from blockQueue
@@ -70,12 +76,41 @@ namespace Version3D {
 
 
         private void PlayerMovement() {
-            if (Input.GetKeyDown(KeyCode.A) && gameObject.transform.position.x > -levelSize) {       //Move Left on A-press | LEFT
-                gameObject.transform.position = new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+            if (Input.GetKeyDown(KeyCode.A) && gameObject.transform.position.x > -levelSize) {       //Move Left on A-press | !!! LEFT !!!
+                currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x - moveAmount, currentBlock.gameObject.transform.position.y, currentBlock.gameObject.transform.position.z);
             }
-            if(Input.GetKeyDown(KeyCode.D) && gameObject.transform.position.x < levelSize) {         //Move right on D-press | RIGHT
-                gameObject.transform.position = new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+            if(Input.GetKeyDown(KeyCode.D) && gameObject.transform.position.x < levelSize) {         //Move right on D-press | !!! RIGHT !!!
+                currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x + moveAmount, currentBlock.gameObject.transform.position.y, currentBlock.gameObject.transform.position.z);
             }
+            if (Input.GetKeyDown(KeyCode.W) && gameObject.transform.position.z < levelSize) {       //Move right on A-press | !!! UP !!!
+                currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x, currentBlock.gameObject.transform.position.y, currentBlock.gameObject.transform.position.z + moveAmount);
+            }
+            if (Input.GetKeyDown(KeyCode.S) && gameObject.transform.position.z > -levelSize) {        //Move right on D-press | !!! DOWN !!!
+                currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x, currentBlock. gameObject.transform.position.y, currentBlock.gameObject.transform.position.z - moveAmount);
+            }
+        }
+
+        private void PlayerRotation() {
+            if (Input.GetKeyDown(KeyCode.U)) {                
+                rot = new Vector3(rot.x, rot.y + 90, rot.z); //Rotate Left on Y-axis
+            }
+            if (Input.GetKeyDown(KeyCode.O)) {                
+                rot = new Vector3(rot.x, rot.y - 90, rot.z); //Rotate Right on Y-axis
+            }
+
+            if (Input.GetKeyDown(KeyCode.J)) {                
+                rot = new Vector3(rot.x, rot.y, rot.z + 90); //Rotate Left on Z-Axis
+            }
+            if (Input.GetKeyDown(KeyCode.L)) {                
+                rot = new Vector3(rot.x, rot.y, rot.z - 90); //Rotate Right on Z-Axis
+            }
+            if (Input.GetKeyDown(KeyCode.I)) {                
+                rot = new Vector3(rot.x + 90, rot.y, rot.z); //Rotate Left on X-Axis
+            }
+            if (Input.GetKeyDown(KeyCode.K)) {                
+                rot = new Vector3(rot.x - 90, rot.y, rot.z); //Rotate Right on X-Axis
+            }
+            currentBlock.gameObject.transform.eulerAngles = rot;
         }
     }
 }

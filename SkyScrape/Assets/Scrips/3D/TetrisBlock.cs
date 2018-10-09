@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Version3D {
     [RequireComponent(typeof(Rigidbody))]
     public class TetrisBlock : MonoBehaviour {
+
         protected List<GameObject> singleBlocks = new List<GameObject>();
         protected Rigidbody rigid;
         protected int score = 4;
@@ -38,6 +39,7 @@ namespace Version3D {
         }
 
 
+        
         public virtual void EndLock() {
             if(rigid.velocity.magnitude < .1f) {
                 foreach (GameObject block in singleBlocks) {

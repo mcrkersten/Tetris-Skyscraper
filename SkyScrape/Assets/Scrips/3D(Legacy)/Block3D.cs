@@ -28,9 +28,9 @@ namespace Legacy {
         }
 
 
-        public void SetPosition(Vector3 newPos) {
-            position = newPos;
-        }
+        //public void SetPosition(Vector3 newPos) {
+        //    position = newPos;
+        //}
 
 
         public void Release() {

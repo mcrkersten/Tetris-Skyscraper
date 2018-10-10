@@ -76,8 +76,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4598525170714384}
-  - component: {fileID: 114995977550971524}
   - component: {fileID: 54029699026722138}
+  - component: {fileID: 114118442716618876}
   m_Layer: 0
   m_Name: Block2
   m_TagString: Untagged
@@ -352,7 +352,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 1
@@ -404,6 +404,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.575, y: 1.575, z: 1.575}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114118442716618876
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1527119782940248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7598514a12d4974b842f39dd7945c29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114212566778998380
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -484,15 +495,3 @@ MonoBehaviour:
   - {fileID: 1398446051724710, guid: 403ba811b06121a40a8493a2e4a59e80, type: 2}
   - {fileID: 1597565483618470, guid: d67da01677842934cb72ec5e0e02fc00, type: 2}
   - {fileID: 1597565483618470, guid: d67da01677842934cb72ec5e0e02fc00, type: 2}
---- !u!114 &114995977550971524
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1527119782940248}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49a5b4cea50f94a4d88a5149508c46c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hit: 0

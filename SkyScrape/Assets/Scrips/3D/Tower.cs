@@ -24,7 +24,7 @@ namespace Version3D {
                 if (instance == null) {
                     GameObject obj = new GameObject("Tower");
                     obj.AddComponent(typeof(BoxCollider));                          //Generate BoxCollider
-                    obj.GetComponent<BoxCollider>().size = new Vector3(25, 1, 25);  //Set Size of BoxCollider
+                    obj.GetComponent<BoxCollider>().size = new Vector3(16, 1, 16);  //Set Size of BoxCollider
                     instance = obj.AddComponent(typeof(Tower)) as Tower;
                     Debug.Log("Could not locate an Tower object.  Tower was Generated Automaticly.");
                 }

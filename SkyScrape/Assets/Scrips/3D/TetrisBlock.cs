@@ -4,7 +4,6 @@ using UnityEngine;
 namespace Version3D {
     [RequireComponent(typeof(Rigidbody))]
     public class TetrisBlock : MonoBehaviour {
-
         protected List<GameObject> singleBlocks = new List<GameObject>();
         protected Rigidbody rigid;
         protected int score = 4;
@@ -17,13 +16,16 @@ namespace Version3D {
             foreach (Transform child in transform) {
                 singleBlocks.Add(child.gameObject);
             }
-            rigid = this.GetComponent<Rigidbody>();
         }
 
 
         private void OnCollisionEnter(Collision collision) {
-            if (OnColissionEvent != null) {
-                OnColissionEvent();
+            if(this.gameObject != collision.gameObject)
+            {
+                if (OnColissionEvent != null)
+                {
+                    OnColissionEvent();
+                }
             }
         }
 
@@ -34,6 +36,7 @@ namespace Version3D {
 
 
         public void Release() {
+            rigid = this.gameObject.GetComponent<Rigidbody>();
             rigid.useGravity = true;
             rigid.constraints = RigidbodyConstraints.None;
         }

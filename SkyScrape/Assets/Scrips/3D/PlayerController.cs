@@ -7,8 +7,8 @@ namespace Version3D {
         private int score;
 
         private float moveAmount = 1.6f;
+        private float moveDownSpeed = .1f;
         private float levelSize = 2.4f;
-        private Vector3 rot = new Vector3(0,0,0);
         public Tower tower;
         public BlockQueue blockQueue;
         private GameObject currentBlock;
@@ -46,6 +46,15 @@ namespace Version3D {
             PlayerRotation();
         }
 
+        private void FixedUpdate() {
+            if (Input.GetKey(KeyCode.Space)) {
+                currentBlock.transform.Translate(Vector3.down * Time.deltaTime * 10, Space.World);
+            }
+            else {
+                currentBlock.transform.Translate(Vector3.down * Time.deltaTime, Space.World);
+            } 
+        }
+
 
         public void NextBlock() {
             TetrisBlock.OnColissionEvent += ReleaseBlock;                   //Subscribe < Listen to blockQueue
@@ -76,41 +85,39 @@ namespace Version3D {
 
 
         private void PlayerMovement() {
-            if (Input.GetKeyDown(KeyCode.A) && gameObject.transform.position.x > -levelSize) {       //Move Left on A-press | !!! LEFT !!!
+            if (Input.GetKeyDown(KeyCode.A) && currentBlock.gameObject.transform.position.x > -levelSize) {       //Move Left on A-press | !!! LEFT !!!
                 currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x - moveAmount, currentBlock.gameObject.transform.position.y, currentBlock.gameObject.transform.position.z);
             }
-            if(Input.GetKeyDown(KeyCode.D) && gameObject.transform.position.x < levelSize) {         //Move right on D-press | !!! RIGHT !!!
+            if(Input.GetKeyDown(KeyCode.D) && currentBlock.gameObject.transform.position.x < levelSize) {         //Move right on D-press | !!! RIGHT !!!
                 currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x + moveAmount, currentBlock.gameObject.transform.position.y, currentBlock.gameObject.transform.position.z);
             }
-            if (Input.GetKeyDown(KeyCode.W) && gameObject.transform.position.z < levelSize) {       //Move right on A-press | !!! UP !!!
+            if (Input.GetKeyDown(KeyCode.W) && currentBlock.gameObject.transform.position.z < levelSize) {       //Move right on A-press | !!! UP !!!
                 currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x, currentBlock.gameObject.transform.position.y, currentBlock.gameObject.transform.position.z + moveAmount);
             }
-            if (Input.GetKeyDown(KeyCode.S) && gameObject.transform.position.z > -levelSize) {        //Move right on D-press | !!! DOWN !!!
+            if (Input.GetKeyDown(KeyCode.S) && currentBlock.gameObject.transform.position.z > -levelSize) {        //Move right on D-press | !!! DOWN !!!
                 currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x, currentBlock. gameObject.transform.position.y, currentBlock.gameObject.transform.position.z - moveAmount);
             }
         }
 
         private void PlayerRotation() {
-            if (Input.GetKeyDown(KeyCode.U)) {                
-                rot = new Vector3(rot.x, rot.y + 90, rot.z); //Rotate Left on Y-axis
+            if (Input.GetKeyDown(KeyCode.U)) {
+                currentBlock.transform.Rotate(Vector3.up, -90f, Space.World);           //Rotate Left on Y-axis
             }
-            if (Input.GetKeyDown(KeyCode.O)) {                
-                rot = new Vector3(rot.x, rot.y - 90, rot.z); //Rotate Right on Y-axis
+            if (Input.GetKeyDown(KeyCode.O)) {
+                currentBlock.transform.Rotate(Vector3.up, 90f, Space.World);            //Rotate Right on Y-axis
             }
-
-            if (Input.GetKeyDown(KeyCode.J)) {                
-                rot = new Vector3(rot.x, rot.y, rot.z + 90); //Rotate Left on Z-Axis
+            if (Input.GetKeyDown(KeyCode.J)) {
+                currentBlock.transform.Rotate(Vector3.forward, -90f, Space.World);      //Rotate Left on Z-Axis
             }
-            if (Input.GetKeyDown(KeyCode.L)) {                
-                rot = new Vector3(rot.x, rot.y, rot.z - 90); //Rotate Right on Z-Axis
+            if (Input.GetKeyDown(KeyCode.L)) {
+                currentBlock.transform.Rotate(Vector3.forward, 90f, Space.World);       //Rotate Left on Z-Axis
             }
-            if (Input.GetKeyDown(KeyCode.I)) {                
-                rot = new Vector3(rot.x + 90, rot.y, rot.z); //Rotate Left on X-Axis
+            if (Input.GetKeyDown(KeyCode.I)) {
+                currentBlock.transform.Rotate(Vector3.left, -90f, Space.World);         //Rotate Left on X-Axis
             }
-            if (Input.GetKeyDown(KeyCode.K)) {                
-                rot = new Vector3(rot.x - 90, rot.y, rot.z); //Rotate Right on X-Axis
+            if (Input.GetKeyDown(KeyCode.K)) {
+                currentBlock.transform.Rotate(Vector3.left, 90f, Space.World);          //Rotate Right on X-Axis
             }
-            currentBlock.gameObject.transform.eulerAngles = rot;
         }
     }
 }

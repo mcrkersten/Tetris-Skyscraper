@@ -8,6 +8,7 @@ namespace Version3D {
         protected Rigidbody rigid;
         protected int score = 4;
 
+        private bool isUsed = false;
         public delegate void OnColission();
         public static event OnColission OnColissionEvent;
 
@@ -22,8 +23,9 @@ namespace Version3D {
         private void OnCollisionEnter(Collision collision) {
             if(this.gameObject != collision.gameObject)
             {
-                if (OnColissionEvent != null)
+                if (OnColissionEvent != null && isUsed == false)
                 {
+                    isUsed = true;
                     OnColissionEvent();
                 }
             }
@@ -41,6 +43,11 @@ namespace Version3D {
             rigid.constraints = RigidbodyConstraints.None;
         }
 
+        public void ActivateCollisions() {                  //PlayerControler activates colliders if this object is used
+            foreach(Transform child in transform) {
+                child.GetComponent<Collider>().enabled = true;
+            }
+        }
 
         
         public virtual void EndLock() {

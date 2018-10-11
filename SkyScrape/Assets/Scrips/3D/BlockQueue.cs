@@ -72,10 +72,6 @@ namespace Version3D {
             }
         }
 
-        private void InitBlockQueuePositions() {       
-            controller.NextBlock();
-        }
-
 
         public GameObject GetNextBlock() {
             GameObject returnBlock = blockQueue[0];

@@ -24,7 +24,7 @@ namespace Version3D {
                 // If it is still null, create a new instance
                 if (instance == null) {
                     GameObject obj = new GameObject("PlayerController");
-                    obj.transform.position = new Vector3(0, 15, 0);
+                    obj.transform.position = new Vector3(0.8f, 15, 0.8f);
                     instance = obj.AddComponent(typeof(PlayerController)) as PlayerController;
                     Debug.Log("Could not locate an PlayerController object.  PlayerController was Generated Automaticly.");
                 }
@@ -47,6 +47,9 @@ namespace Version3D {
         }
 
         private void FixedUpdate() {
+            if(currentBlock.transform.localPosition.y < -5) {               //Activate collisions
+                currentBlock.GetComponent<TetrisBlock>().ActivateCollisions();  
+            }
             if (Input.GetKey(KeyCode.Space)) {
                 currentBlock.transform.Translate(Vector3.down * Time.deltaTime * 10, Space.World);
             }
@@ -86,16 +89,16 @@ namespace Version3D {
 
         private void PlayerMovement() {
             if (Input.GetKeyDown(KeyCode.A) && currentBlock.gameObject.transform.position.x > -levelSize) {       //Move Left on A-press | !!! LEFT !!!
-                currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x - moveAmount, currentBlock.gameObject.transform.position.y, currentBlock.gameObject.transform.position.z);
+                gameObject.transform.position = new Vector3(gameObject.transform.position.x - moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
             }
             if(Input.GetKeyDown(KeyCode.D) && currentBlock.gameObject.transform.position.x < levelSize) {         //Move right on D-press | !!! RIGHT !!!
-                currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x + moveAmount, currentBlock.gameObject.transform.position.y, currentBlock.gameObject.transform.position.z);
+                gameObject.transform.position = new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
             }
             if (Input.GetKeyDown(KeyCode.W) && currentBlock.gameObject.transform.position.z < levelSize) {       //Move right on A-press | !!! UP !!!
-                currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x, currentBlock.gameObject.transform.position.y, currentBlock.gameObject.transform.position.z + moveAmount);
+                gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + moveAmount);
             }
             if (Input.GetKeyDown(KeyCode.S) && currentBlock.gameObject.transform.position.z > -levelSize) {        //Move right on D-press | !!! DOWN !!!
-                currentBlock.gameObject.transform.position = new Vector3(currentBlock.gameObject.transform.position.x, currentBlock. gameObject.transform.position.y, currentBlock.gameObject.transform.position.z - moveAmount);
+                gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - moveAmount);
             }
         }
 

@@ -5,10 +5,11 @@ namespace Version3D {
     public class PlayerController : MonoBehaviour {
 
         private int score;
-
+        private Vector3 move;
         private float moveAmount = 1.6f;
         private float moveDownSpeed = .1f;
         private float levelSize = 2.4f;
+        private bool canMove = false;
         public Tower tower;
         public BlockQueue blockQueue;
         private GameObject currentBlock;
@@ -38,6 +39,7 @@ namespace Version3D {
             tower = Tower.Instance;                                         //Look for Tower
             Tower.SendScore += UpdateScore;                                 //Subscribe < Listen for new Score from Tower
             Tower.OnBlockFall += UpdateLifes;                               //Subscribe < Listen for Life-update from Tower
+            PositionTest.OnTriggerDetect += OnTriggerDetect;                //Subscribe < Listen for trigger update from all SingleBlock objects
         }
 
 
@@ -47,7 +49,7 @@ namespace Version3D {
         }
 
         private void FixedUpdate() {
-            if(currentBlock.transform.localPosition.y < -5) {               //Activate collisions
+            if(currentBlock.transform.localPosition.y < -1) {               //Activate collisions
                 currentBlock.GetComponent<TetrisBlock>().ActivateCollisions();  
             }
             if (Input.GetKey(KeyCode.Space)) {
@@ -68,13 +70,22 @@ namespace Version3D {
 
 
         void ReleaseBlock() {                                               //ReleaseBlock Event
+            StopCoroutine(ExecuteMovementWait(move));
             TetrisBlock.OnColissionEvent -= ReleaseBlock;                   //Un-subscribe < Don't listen to blockQueue (Prevent MemoryLeak)
-            tower.playedBlocks.Add(currentBlock);                           //Add currentBlock to the Tower Object
+            tower.playedBlocks.Add(currentBlock);                           //Add currentBlock to the Tower Object            
             currentBlock.GetComponent<TetrisBlock>().Release();
+            tower.CheckLayer();
+
             currentBlock.transform.parent = null;                           //Reset all currentblock variables
             currentBlock = null;
             NextBlock();                                                    //Get the next block
         }   
+
+
+        private void OnTriggerDetect(bool x) {
+            canMove = x;
+            print(x);
+        }
         
 
         void UpdateScore(int scoreToAdd) {                                  //Score event
@@ -89,16 +100,24 @@ namespace Version3D {
 
         private void PlayerMovement() {
             if (Input.GetKeyDown(KeyCode.A) && currentBlock.gameObject.transform.position.x > -levelSize) {       //Move Left on A-press | !!! LEFT !!!
-                gameObject.transform.position = new Vector3(gameObject.transform.position.x - moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+                currentBlock.GetComponent<TetrisBlock>().TestMovement(new Vector3(gameObject.transform.position.x - moveAmount, gameObject.transform.position.y, gameObject.transform.position.z));
+                move = new Vector3(gameObject.transform.position.x - moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+                StartCoroutine(ExecuteMovementWait(move));             
             }
             if(Input.GetKeyDown(KeyCode.D) && currentBlock.gameObject.transform.position.x < levelSize) {         //Move right on D-press | !!! RIGHT !!!
-                gameObject.transform.position = new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+                currentBlock.GetComponent<TetrisBlock>().TestMovement(new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z));
+                move = new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+                StartCoroutine(ExecuteMovementWait(move));
             }
             if (Input.GetKeyDown(KeyCode.W) && currentBlock.gameObject.transform.position.z < levelSize) {       //Move right on A-press | !!! UP !!!
-                gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + moveAmount);
+                currentBlock.GetComponent<TetrisBlock>().TestMovement(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + moveAmount));
+                move = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + moveAmount);
+                StartCoroutine(ExecuteMovementWait(move));
             }
             if (Input.GetKeyDown(KeyCode.S) && currentBlock.gameObject.transform.position.z > -levelSize) {        //Move right on D-press | !!! DOWN !!!
-                gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - moveAmount);
+                currentBlock.GetComponent<TetrisBlock>().TestMovement(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - moveAmount));
+                move = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - moveAmount);
+                StartCoroutine(ExecuteMovementWait(move));
             }
         }
 
@@ -122,5 +141,18 @@ namespace Version3D {
                 currentBlock.transform.Rotate(Vector3.left, 90f, Space.World);          //Rotate Right on X-Axis
             }
         }
+
+        private void ExecuteMovement(Vector3 move) {
+            if (canMove) {
+                gameObject.transform.position = move;
+            }     
+        }
+
+        IEnumerator ExecuteMovementWait(Vector3 move) {
+            yield return new WaitForSeconds(.05f);
+            ExecuteMovement(move);
+        }
+
+
     }
 }

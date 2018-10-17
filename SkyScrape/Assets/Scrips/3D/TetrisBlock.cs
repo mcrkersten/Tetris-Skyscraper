@@ -4,10 +4,12 @@ using UnityEngine;
 namespace Version3D {
     [RequireComponent(typeof(Rigidbody))]
     public class TetrisBlock : MonoBehaviour {
-        protected List<GameObject> singleBlocks = new List<GameObject>();
+        [HideInInspector]
+        public List<GameObject> singleBlocks = new List<GameObject>();
+        public GameObject testColliderBase;
         protected Rigidbody rigid;
         protected int score = 4;
-
+        private bool testResult = false;
         private bool isUsed = false;
         public delegate void OnColission();
         public static event OnColission OnColissionEvent;
@@ -38,6 +40,11 @@ namespace Version3D {
 
 
         public void Release() {
+            foreach (Transform child in transform) {
+                if (child.tag != "TestTriggerBase") {
+                    child.GetComponent<SingleBlock>().isSet = true;
+                }               
+            }
             rigid = this.gameObject.GetComponent<Rigidbody>();
             rigid.useGravity = true;
             rigid.constraints = RigidbodyConstraints.None;
@@ -45,22 +52,22 @@ namespace Version3D {
 
         public void ActivateCollisions() {                  //PlayerControler activates colliders if this object is used
             foreach(Transform child in transform) {
-                child.GetComponent<Collider>().enabled = true;
+                if (child.tag != "TestTriggerBase") {
+                    child.GetComponent<Collider>().enabled = true;
+                }           
             }
         }
 
-        
-        public virtual void EndLock() {
-            if(rigid.velocity.magnitude < .1f) {
-                foreach (GameObject block in singleBlocks) {
+        public void TestMovement(Vector3 newPos)
+        {
+            testColliderBase.transform.position = new Vector3(newPos.x, testColliderBase.transform.position.y, newPos.z);
+            //ReturnPos();
+            
+        }
 
-                    //Round all rotations to a single non decimal number
-                    block.transform.eulerAngles = new Vector3((float)System.Math.Round(this.gameObject.transform.eulerAngles.x, 1),
-                                                              (float)System.Math.Round(this.gameObject.transform.eulerAngles.y, 1),
-                                                              (float)System.Math.Round(this.gameObject.transform.eulerAngles.z, 1));
-                    block.GetComponent<SingleBlock>().ReturnModel();
-                }
-            }
+
+        public void ReturnPos() {
+            testColliderBase.transform.position = testColliderBase.transform.parent.transform.position;
         }
     }
 }

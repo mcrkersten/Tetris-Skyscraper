@@ -10,9 +10,6 @@ namespace Version3D {
         public GameObject[] blockShapes;
         public List<GameObject> blockQueue = new List<GameObject>();
 
-        [HideInInspector]
-        public InitManager init;
-
         private int queueNumber;
         private List<GameObject> queuePosition = new List<GameObject>();
 
@@ -55,7 +52,7 @@ namespace Version3D {
                 foreach (Transform child in transform) {                                        //Put all QueuePositions in List
                     queuePosition.Add(child.gameObject);
                 }
-                blockShapes = init.models;                                                      //Get Models from InitManager;
+                blockShapes = InitManager.Instance.tetrisModels;                                                      //Get Models from InitManager;
                 for (int i = 0; i < queuePosition.Capacity -1; ++i) {                                 //Instantiate new Blocks in queueList
                     blockQueue.Add(GenerateNewBlok());
                 }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BlockQueue
   - Ground
+  - TestTriggerBase
   layers:
   - Default
   - TransparentFX
@@ -16,8 +17,8 @@ TagManager:
   - 
   - 
   - Building
-  - 
-  - 
+  - SnapPointLayer
+  - CollisionTest
   - 
   - 
   - 

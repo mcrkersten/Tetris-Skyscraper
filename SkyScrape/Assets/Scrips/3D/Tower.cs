@@ -5,6 +5,8 @@ namespace Version3D {
     public class Tower : MonoBehaviour {
 
         public List<GameObject> playedBlocks = new List<GameObject>();
+        private SnapPointSystem snapSystem;
+
         public delegate void ScorePoints(int score);
         public static event ScorePoints SendScore;
 
@@ -33,6 +35,11 @@ namespace Version3D {
         }
 
 
+        private void Start() {
+            snapSystem = Instantiate(InitManager.Instance.snapSystem).GetComponent<SnapPointSystem>();
+        }
+
+
         public void GetScore() {
             int score = 0;
             foreach (GameObject block in playedBlocks) {
@@ -46,6 +53,11 @@ namespace Version3D {
 
         private void OnTriggerEnter(Collider collision) {
             OnBlockFall();
+        }
+
+
+        public void CheckLayer() {
+            snapSystem.CheckLayer();
         }
     }
 }

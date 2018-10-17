@@ -313,7 +313,11 @@
     <Compile Include="Assets\Scrips\3D\BlockQueue.cs" />
     <Compile Include="Assets\Scrips\3D\InitManager.cs" />
     <Compile Include="Assets\Scrips\3D\PlayerController.cs" />
+    <Compile Include="Assets\Scrips\3D\PositionTest.cs" />
     <Compile Include="Assets\Scrips\3D\SingleBlock.cs" />
+    <Compile Include="Assets\Scrips\3D\SnapPointSystem\SnapPoint.cs" />
+    <Compile Include="Assets\Scrips\3D\SnapPointSystem\SnapPointSystem.cs" />
+    <Compile Include="Assets\Scrips\3D\SnapPointSystem\SnapPointSystemLayer.cs" />
     <Compile Include="Assets\Scrips\3D\TetrisBlock.cs" />
     <Compile Include="Assets\Scrips\3D\Tower.cs" />
   </ItemGroup>

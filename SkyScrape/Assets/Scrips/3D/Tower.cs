@@ -7,12 +7,6 @@ namespace Version3D {
         public List<GameObject> playedBlocks = new List<GameObject>();
         private SnapPointSystem snapSystem;
 
-        public delegate void ScorePoints(int score);
-        public static event ScorePoints SendScore;
-
-        public delegate void BlockFall();
-        public static event BlockFall OnBlockFall;
-
         private static Tower instance = null;
         public static Tower Instance {
             get {
@@ -25,8 +19,10 @@ namespace Version3D {
                 // If it is still null, create a new instance
                 if (instance == null) {
                     GameObject obj = new GameObject("Tower");
+                    obj.transform.position = new Vector3(0, -2, 0);
                     obj.AddComponent(typeof(BoxCollider));                          //Generate BoxCollider
                     obj.GetComponent<BoxCollider>().size = new Vector3(16, 1, 16);  //Set Size of BoxCollider
+                    obj.GetComponent<BoxCollider>().isTrigger = true;
                     instance = obj.AddComponent(typeof(Tower)) as Tower;
                     Debug.Log("Could not locate an Tower object.  Tower was Generated Automaticly.");
                 }
@@ -40,24 +36,18 @@ namespace Version3D {
         }
 
 
-        public void GetScore() {
-            int score = 0;
-            foreach (GameObject block in playedBlocks) {
-                score += block.GetComponent<TetrisBlock>().GetScore();
-            }
-            if (SendScore != null) {
-                SendScore(score);       //Raise score event with a int of score to add
-            }
-        }
-
-
         private void OnTriggerEnter(Collider collision) {
-            OnBlockFall();
+            InitManager.Instance.lifes--;
         }
 
 
         public void CheckLayer() {
             snapSystem.CheckLayer();
+            foreach(GameObject rb in playedBlocks) {
+                if(rb != null) {
+                    rb.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+                }              
+            }
         }
     }
 }

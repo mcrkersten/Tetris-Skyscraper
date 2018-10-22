@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+
 namespace Version3D {
     public class PlayerController : MonoBehaviour {
 
@@ -10,9 +14,16 @@ namespace Version3D {
         private float moveDownSpeed = .1f;
         private float levelSize = 2.4f;
         private bool canMove = false;
-        public Tower tower;
-        public BlockQueue blockQueue;
         private GameObject currentBlock;
+        private TetrisBlock curTetrisBlock;
+        private float rememberLastHeight = 0;
+        private Text scoreText;
+        private Tower tower;
+
+        public delegate void RotateCamera(float rotation);
+        public static event RotateCamera OnRotateCamera;
+        public BlockQueue blockQueue;
+        
         private static PlayerController instance = null;
         public static PlayerController Instance {
             get {
@@ -33,22 +44,83 @@ namespace Version3D {
             }
         }
 
+
         void Awake() {
+            scoreText = InitManager.Instance.scoreText;                     //Get scoreObject from InitManager
             blockQueue = BlockQueue.Instance;                               //Look for BlockQueue
             blockQueue.controller = this;
             tower = Tower.Instance;                                         //Look for Tower
-            Tower.SendScore += UpdateScore;                                 //Subscribe < Listen for new Score from Tower
-            Tower.OnBlockFall += UpdateLifes;                               //Subscribe < Listen for Life-update from Tower
+            SnapPointSystem.SendScore += UpdateScore;                       //Subscribe < Listen for new Score from SnapPointSystem
             PositionTest.OnTriggerDetect += OnTriggerDetect;                //Subscribe < Listen for trigger update from all SingleBlock objects
+            SnapPointSystem.OnFloorbuild += OnFloorBuild;                   //Subscribe < Listen for floorbuild evenbt from SnapPointSystem
         }
 
 
         private void Update() {
-            PlayerMovement();
-            PlayerRotation();
+            if (Input.GetKeyDown(KeyCode.A) && currentBlock.gameObject.transform.position.x > -levelSize) {       //Move Left on A-press | !!! LEFT !!!
+                curTetrisBlock.TestMovement(new Vector3(gameObject.transform.position.x - moveAmount, gameObject.transform.position.y, gameObject.transform.position.z));
+                move = new Vector3(gameObject.transform.position.x - moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+                StartCoroutine(ExecuteMovementWait(move));
+            }
+            if (Input.GetKeyDown(KeyCode.D) && currentBlock.gameObject.transform.position.x < levelSize) {         //Move right on D-press | !!! RIGHT !!!
+                curTetrisBlock.TestMovement(new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z));
+                move = new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+                StartCoroutine(ExecuteMovementWait(move));
+            }
+            if (Input.GetKeyDown(KeyCode.W) && currentBlock.gameObject.transform.position.z < levelSize) {       //Move right on A-press | !!! UP !!!
+                curTetrisBlock.TestMovement(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + moveAmount));
+                move = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + moveAmount);
+                StartCoroutine(ExecuteMovementWait(move));
+            }
+            if (Input.GetKeyDown(KeyCode.S) && currentBlock.gameObject.transform.position.z > -levelSize) {        //Move right on D-press | !!! DOWN !!!
+                curTetrisBlock.TestMovement(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - moveAmount));
+                move = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - moveAmount);
+                StartCoroutine(ExecuteMovementWait(move));
+            }
+            if (Input.GetKeyDown(KeyCode.R)) {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+            if (Input.GetKeyDown(KeyCode.T)) {
+                if (Time.timeScale == 0) {
+                    Time.timeScale = 1;
+                }
+                else {
+                    Time.timeScale = 0;
+                }
+
+            }
+
+            if (Input.GetKeyDown(KeyCode.U)) {
+                curTetrisBlock.TestRotation(Vector3.up, -90f);                          //Test Rotate Left on Y-axis
+                StartCoroutine(ExecuteRotationWait(Vector3.up, -90));                   //Execute Rotation
+            }
+            if (Input.GetKeyDown(KeyCode.O)) {
+                curTetrisBlock.TestRotation(Vector3.up, 90f);                           //Test Rotate Right on Y-axis
+                StartCoroutine(ExecuteRotationWait(Vector3.up, 90));                    //Execute Rotation
+            }
+            if (Input.GetKeyDown(KeyCode.J)) {
+                curTetrisBlock.TestRotation(Vector3.forward, -90f);                     //Test Rotate Left on Z-Axis
+                StartCoroutine(ExecuteRotationWait(Vector3.forward, -90));              //Execute Rotation
+            }
+            if (Input.GetKeyDown(KeyCode.L)) {
+                curTetrisBlock.TestRotation(Vector3.forward, 90f);                      //Test Rotate Left on Z-Axis
+                StartCoroutine(ExecuteRotationWait(Vector3.forward, 90));               //Execute Rotation
+            }
+            if (Input.GetKeyDown(KeyCode.I)) {
+                curTetrisBlock.TestRotation(Vector3.left, -90f);                        //Test Rotate Left on X-Axis
+                StartCoroutine(ExecuteRotationWait(Vector3.left, -90));                 //Execute Rotation
+            }
+            if (Input.GetKeyDown(KeyCode.K)) {
+                curTetrisBlock.TestRotation(Vector3.left, 90f);                         //Test Rotate Right on X-Axis
+                StartCoroutine(ExecuteRotationWait(Vector3.left, 90));                  //Execute Rotation
+            }
         }
 
+
         private void FixedUpdate() {
+            //PlayerMovement();
+            //PlayerRotation();
+            CameraRotation();
             if(currentBlock.transform.localPosition.y < -1) {               //Activate collisions
                 currentBlock.GetComponent<TetrisBlock>().ActivateCollisions();  
             }
@@ -64,18 +136,19 @@ namespace Version3D {
         public void NextBlock() {
             TetrisBlock.OnColissionEvent += ReleaseBlock;                   //Subscribe < Listen to blockQueue
             currentBlock = blockQueue.GetNextBlock();                       //Get next block from blockQueue
+            curTetrisBlock = currentBlock.GetComponent<TetrisBlock>();
             currentBlock.transform.position = this.transform.position;
             currentBlock.transform.parent = this.gameObject.transform;
         }
 
 
-        void ReleaseBlock() {                                               //ReleaseBlock Event
-            StopCoroutine(ExecuteMovementWait(move));
+        private void ReleaseBlock() {                                       //ReleaseBlock Event
+            StopCoroutine(ExecuteMovementWait(move));                       //Exit Movement wait coroutine
             TetrisBlock.OnColissionEvent -= ReleaseBlock;                   //Un-subscribe < Don't listen to blockQueue (Prevent MemoryLeak)
-            tower.playedBlocks.Add(currentBlock);                           //Add currentBlock to the Tower Object            
-            currentBlock.GetComponent<TetrisBlock>().Release();
+            tower.playedBlocks.Add(currentBlock);                           //Add currentBlock to the Tower Object       
+            curTetrisBlock.parent = this.gameObject;
+            curTetrisBlock.Release();
             tower.CheckLayer();
-
             currentBlock.transform.parent = null;                           //Reset all currentblock variables
             currentBlock = null;
             NextBlock();                                                    //Get the next block
@@ -84,63 +157,95 @@ namespace Version3D {
 
         private void OnTriggerDetect(bool x) {
             canMove = x;
-            print(x);
         }
         
 
-        void UpdateScore(int scoreToAdd) {                                  //Score event
+        private void UpdateScore(int scoreToAdd) {                                  //Score event
             score += scoreToAdd;
+            scoreText.text = "Score: " + score;
         }
 
 
-        void UpdateLifes() {
+        //private void PlayerMovement() {
+        //    if (Input.GetKeyDown(KeyCode.A) && currentBlock.gameObject.transform.position.x > -levelSize) {       //Move Left on A-press | !!! LEFT !!!
+        //        curTetrisBlock.TestMovement(new Vector3(gameObject.transform.position.x - moveAmount, gameObject.transform.position.y, gameObject.transform.position.z));
+        //        move = new Vector3(gameObject.transform.position.x - moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+        //        StartCoroutine(ExecuteMovementWait(move));             
+        //    }
+        //    if(Input.GetKeyDown(KeyCode.D) && currentBlock.gameObject.transform.position.x < levelSize) {         //Move right on D-press | !!! RIGHT !!!
+        //        curTetrisBlock.TestMovement(new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z));
+        //        move = new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
+        //        StartCoroutine(ExecuteMovementWait(move));
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.W) && currentBlock.gameObject.transform.position.z < levelSize) {       //Move right on A-press | !!! UP !!!
+        //        curTetrisBlock.TestMovement(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + moveAmount));
+        //        move = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + moveAmount);
+        //        StartCoroutine(ExecuteMovementWait(move));
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.S) && currentBlock.gameObject.transform.position.z > -levelSize) {        //Move right on D-press | !!! DOWN !!!
+        //        curTetrisBlock.TestMovement(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - moveAmount));
+        //        move = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - moveAmount);
+        //        StartCoroutine(ExecuteMovementWait(move));
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.R)) {
+        //        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.T)) {
+        //        if(Time.timeScale == 0) {
+        //            Time.timeScale = 1;
+        //        }
+        //        else {
+        //            Time.timeScale = 0;
+        //        }
+                
+        //    }
+        //}
 
+
+        //private void PlayerRotation() {
+        //    if (Input.GetKeyDown(KeyCode.U)) {
+        //        curTetrisBlock.TestRotation(Vector3.up, -90f);                          //Test Rotate Left on Y-axis
+        //        StartCoroutine(ExecuteRotationWait(Vector3.up, -90));                   //Execute Rotation
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.O)) {
+        //        curTetrisBlock.TestRotation(Vector3.up, 90f);                           //Test Rotate Right on Y-axis
+        //        StartCoroutine(ExecuteRotationWait(Vector3.up, 90));                    //Execute Rotation
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.J)) {
+        //        curTetrisBlock.TestRotation(Vector3.forward, -90f);                     //Test Rotate Left on Z-Axis
+        //        StartCoroutine(ExecuteRotationWait(Vector3.forward, -90));              //Execute Rotation
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.L)) {
+        //        curTetrisBlock.TestRotation(Vector3.forward, 90f);                      //Test Rotate Left on Z-Axis
+        //        StartCoroutine(ExecuteRotationWait(Vector3.forward, 90));               //Execute Rotation
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.I)) {
+        //        curTetrisBlock.TestRotation(Vector3.left, -90f);                        //Test Rotate Left on X-Axis
+        //        StartCoroutine(ExecuteRotationWait(Vector3.left, -90));                 //Execute Rotation
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.K)) {
+        //        curTetrisBlock.TestRotation(Vector3.left, 90f);                         //Test Rotate Right on X-Axis
+        //        StartCoroutine(ExecuteRotationWait(Vector3.left, 90));                  //Execute Rotation
+        //    }
+        //}
+
+        
+        private void OnFloorBuild() {
+            StartCoroutine(NextBlockWait());
         }
 
 
-        private void PlayerMovement() {
-            if (Input.GetKeyDown(KeyCode.A) && currentBlock.gameObject.transform.position.x > -levelSize) {       //Move Left on A-press | !!! LEFT !!!
-                currentBlock.GetComponent<TetrisBlock>().TestMovement(new Vector3(gameObject.transform.position.x - moveAmount, gameObject.transform.position.y, gameObject.transform.position.z));
-                move = new Vector3(gameObject.transform.position.x - moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
-                StartCoroutine(ExecuteMovementWait(move));             
-            }
-            if(Input.GetKeyDown(KeyCode.D) && currentBlock.gameObject.transform.position.x < levelSize) {         //Move right on D-press | !!! RIGHT !!!
-                currentBlock.GetComponent<TetrisBlock>().TestMovement(new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z));
-                move = new Vector3(gameObject.transform.position.x + moveAmount, gameObject.transform.position.y, gameObject.transform.position.z);
-                StartCoroutine(ExecuteMovementWait(move));
-            }
-            if (Input.GetKeyDown(KeyCode.W) && currentBlock.gameObject.transform.position.z < levelSize) {       //Move right on A-press | !!! UP !!!
-                currentBlock.GetComponent<TetrisBlock>().TestMovement(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + moveAmount));
-                move = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + moveAmount);
-                StartCoroutine(ExecuteMovementWait(move));
-            }
-            if (Input.GetKeyDown(KeyCode.S) && currentBlock.gameObject.transform.position.z > -levelSize) {        //Move right on D-press | !!! DOWN !!!
-                currentBlock.GetComponent<TetrisBlock>().TestMovement(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - moveAmount));
-                move = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - moveAmount);
-                StartCoroutine(ExecuteMovementWait(move));
+        private void CameraRotation() {
+            if(OnRotateCamera != null) {
+                if (Input.GetKeyDown(KeyCode.Z)) {
+                    OnRotateCamera(90);
+                }
+                if (Input.GetKeyDown(KeyCode.X)) {
+                    OnRotateCamera(-90);
+                }
             }
         }
 
-        private void PlayerRotation() {
-            if (Input.GetKeyDown(KeyCode.U)) {
-                currentBlock.transform.Rotate(Vector3.up, -90f, Space.World);           //Rotate Left on Y-axis
-            }
-            if (Input.GetKeyDown(KeyCode.O)) {
-                currentBlock.transform.Rotate(Vector3.up, 90f, Space.World);            //Rotate Right on Y-axis
-            }
-            if (Input.GetKeyDown(KeyCode.J)) {
-                currentBlock.transform.Rotate(Vector3.forward, -90f, Space.World);      //Rotate Left on Z-Axis
-            }
-            if (Input.GetKeyDown(KeyCode.L)) {
-                currentBlock.transform.Rotate(Vector3.forward, 90f, Space.World);       //Rotate Left on Z-Axis
-            }
-            if (Input.GetKeyDown(KeyCode.I)) {
-                currentBlock.transform.Rotate(Vector3.left, -90f, Space.World);         //Rotate Left on X-Axis
-            }
-            if (Input.GetKeyDown(KeyCode.K)) {
-                currentBlock.transform.Rotate(Vector3.left, 90f, Space.World);          //Rotate Right on X-Axis
-            }
-        }
 
         private void ExecuteMovement(Vector3 move) {
             if (canMove) {
@@ -148,11 +253,30 @@ namespace Version3D {
             }     
         }
 
-        IEnumerator ExecuteMovementWait(Vector3 move) {
+
+        private void ExecuteRotation(Vector3 axis, float angle) {
+            if (canMove) {
+                currentBlock.transform.Rotate(axis, angle, Space.World);
+            }
+        }
+
+        private IEnumerator NextBlockWait() {
             yield return new WaitForSeconds(.05f);
-            ExecuteMovement(move);
+            this.gameObject.transform.Translate(Vector3.up * 1.6f, Space.World);
         }
 
 
+        private IEnumerator ExecuteMovementWait(Vector3 move) {
+            yield return new WaitForSeconds(.05f);
+            ExecuteMovement(move);
+            curTetrisBlock.ReturnPos();
+        }
+
+
+        private IEnumerator ExecuteRotationWait(Vector3 axis, float angle) {
+            yield return new WaitForSeconds(.05f);
+            ExecuteRotation(axis, angle);
+            curTetrisBlock.ReturnPos();
+        }
     }
 }

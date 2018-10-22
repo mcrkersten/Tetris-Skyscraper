@@ -6,6 +6,14 @@ namespace Version3D{
     public class SnapPointSystem : MonoBehaviour {
         public List<SnapPointSystemLayer> layer = new List<SnapPointSystemLayer>();
 
+        public delegate void ScorePoints(int score);
+        public static event ScorePoints SendScore;
+
+        public delegate void TowerBuild();
+        public static event TowerBuild OnFloorbuild;
+
+
+        private int blocksForMovement = 16;
 
         private void Start() {
             foreach (Transform child in transform) {
@@ -24,8 +32,15 @@ namespace Version3D{
                                 singleBlock.GetComponent<SingleBlock>().BuildBuilding(point);
                             }
                         }
-                    }
-                }                          
+                    }                  
+                    if(layerX.hasBuild == false) {
+                        OnFloorbuild();
+                        layerX.hasBuild = true;
+                        if (SendScore != null) {
+                            SendScore(16);
+                        }
+                    }                    
+                }               
             }
         }
     }

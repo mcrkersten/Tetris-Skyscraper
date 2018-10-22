@@ -7,6 +7,9 @@ TagManager:
   - BlockQueue
   - Ground
   - TestTriggerBase
+  - DestroyObject
+  - Cube
+  - DeadTrigger
   layers:
   - Default
   - TransparentFX
@@ -19,7 +22,7 @@ TagManager:
   - Building
   - SnapPointLayer
   - CollisionTest
-  - 
+  - LandingPads
   - 
   - 
   - 

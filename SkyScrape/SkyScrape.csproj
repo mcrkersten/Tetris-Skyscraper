@@ -300,6 +300,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ButtonFunctions.cs" />
     <Compile Include="Assets\Scrips\2D\Block.cs" />
     <Compile Include="Assets\Scrips\2D\Block16.cs" />
     <Compile Include="Assets\Scrips\2D\BlockQueue.cs" />
@@ -311,9 +312,15 @@
     <Compile Include="Assets\Scrips\3D(Legacy)\PlayerController3D.cs" />
     <Compile Include="Assets\Scrips\3D(Legacy)\Tower3D.cs" />
     <Compile Include="Assets\Scrips\3D\BlockQueue.cs" />
+    <Compile Include="Assets\Scrips\3D\EndGame.cs" />
+    <Compile Include="Assets\Scrips\3D\ExtraFunctions\CarInstantiator.cs" />
+    <Compile Include="Assets\Scrips\3D\ExtraFunctions\CarMotion.cs" />
+    <Compile Include="Assets\Scrips\3D\ExtraFunctions\Obscurable.cs" />
+    <Compile Include="Assets\Scrips\3D\FollowPlayerController.cs" />
     <Compile Include="Assets\Scrips\3D\InitManager.cs" />
     <Compile Include="Assets\Scrips\3D\PlayerController.cs" />
     <Compile Include="Assets\Scrips\3D\PositionTest.cs" />
+    <Compile Include="Assets\Scrips\3D\ProjectorBlock.cs" />
     <Compile Include="Assets\Scrips\3D\SingleBlock.cs" />
     <Compile Include="Assets\Scrips\3D\SnapPointSystem\SnapPoint.cs" />
     <Compile Include="Assets\Scrips\3D\SnapPointSystem\SnapPointSystem.cs" />
@@ -322,6 +329,11 @@
     <Compile Include="Assets\Scrips\3D\Tower.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Art\InvisibleMask.shader" />
+    <None Include="Assets\Art\ShieldFX.shader" />
+    <None Include="Assets\Standard Assets\Effects\Projectors\Guidelines.txt" />
+    <None Include="Assets\Standard Assets\Effects\Projectors\Shaders\ProjectorLight.shader" />
+    <None Include="Assets\Standard Assets\Effects\Projectors\Shaders\ProjectorMultiply.shader" />
     <None Include="C:\Users\Gebruiker\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Resources\Styles\Main_Dark.uss" />
     <None Include="C:\Users\Gebruiker\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Resources\Styles\Main_Light.uss" />
     <None Include="C:\Users\Gebruiker\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Resources\Templates\Alert.uxml" />

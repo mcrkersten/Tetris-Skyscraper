@@ -26,6 +26,8 @@ namespace Version3D {
                 if (instance == null) {
                     GameObject obj = new GameObject("BlockQueue");
                     instance = obj.AddComponent(typeof(BlockQueue)) as BlockQueue;
+                    obj.AddComponent<FollowPlayerController>();
+                    obj.GetComponent<FollowPlayerController>().minAmount = -1.5f;
                     Debug.Log("Could not locate an BlockQueue object.  BlockQueue was Generated Automaticly.");
 
                     //Create QueuePositions
@@ -52,14 +54,15 @@ namespace Version3D {
                 foreach (Transform child in transform) {                                        //Put all QueuePositions in List
                     queuePosition.Add(child.gameObject);
                 }
-                blockShapes = InitManager.Instance.tetrisModels;                                                      //Get Models from InitManager;
-                for (int i = 0; i < queuePosition.Capacity -1; ++i) {                                 //Instantiate new Blocks in queueList
+                blockShapes = InitManager.Instance.tetrisModels;                                //Get Models from InitManager;
+                for (int i = 0; i < queuePosition.Capacity -1; ++i) {                           //Instantiate new Blocks in queueList
                     blockQueue.Add(GenerateNewBlok());
                 }
             }
             else {throw new Exception("ERROR: Could not locate one or more queue locations :: BlockQueue");}    //Throw error all is lost.
             controller.NextBlock();
         }
+
 
         private void Update() {
             int i = 0;

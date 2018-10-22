@@ -11,7 +11,7 @@ public class PositionTest : MonoBehaviour {
     public static event OnTrigger OnTriggerDetect;
 
     public void OnTriggerEnter(Collider collision) {
-        if (!collision.transform.IsChildOf(parent.transform)) {
+        if (!collision.transform.IsChildOf(parent.transform) && collision.transform.tag != "DeadTrigger") {
             test = collision;
             if (OnTriggerDetect != null) {
                 OnTriggerDetect(false);
@@ -20,7 +20,7 @@ public class PositionTest : MonoBehaviour {
     }
 
     public void OnTriggerExit(Collider collision) {
-        if (OnTriggerDetect != null) {
+        if (OnTriggerDetect != null && collision.transform.tag != "DeadTrigger") {
             OnTriggerDetect(true);
         }
     }

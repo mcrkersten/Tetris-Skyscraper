@@ -6,9 +6,9 @@ using System;
 namespace Version3D {
     public class BlockQueue : MonoBehaviour {
 
-        public PlayerController controller;
-        public GameObject[] blockShapes;
-        public List<GameObject> blockQueue = new List<GameObject>();
+        private PlayerController controller;
+        private GameObject[] blockShapes;
+        private List<GameObject> blockQueue = new List<GameObject>();
 
         private int queueNumber;
         private List<GameObject> queuePosition = new List<GameObject>();
@@ -46,7 +46,7 @@ namespace Version3D {
             }
         }
 
-        private void Start() {       
+        private void Start() {    
             controller = PlayerController.Instance;
             controller.blockQueue = this;
 

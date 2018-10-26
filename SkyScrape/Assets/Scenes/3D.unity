@@ -1119,8 +1119,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minAmount: -0.25
-  cam: {fileID: 1749988376}
-  canMoveObject: 1
 --- !u!4 &640598228
 Transform:
   m_ObjectHideFlags: 0
@@ -2836,6 +2834,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b91679fc4548b314f9c8e5931d80cb1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  killScreen: {fileID: 47127547}
+  cam: {fileID: 1749988376}
   tetrisModels:
   - {fileID: 1352832987376374, guid: 88b1d0e4e8c826c42a2bb1681c2ca74e, type: 2}
   - {fileID: 1527119782940248, guid: 2d72dad196644044592f22d2834306fa, type: 2}

@@ -8,8 +8,10 @@ namespace Version3D {
 
         private Tower tower;
         private BlockQueue blockQueue;
-        private PlayerController controler;
+        private PlayerController controller;
 
+        public GameObject killScreen;
+        public Camera cam;
         public GameObject[] tetrisModels;
         public GameObject[] buildingModels;
         public GameObject snapSystem;
@@ -48,11 +50,15 @@ namespace Version3D {
                 }
                 i++;
             }
+            if(lifes <= 0) {
+                killScreen.SetActive(true);
+                Time.timeScale = 0;
+            }
         }
 
 
         private void Init() {
-            controler = PlayerController.Instance;
+            controller = PlayerController.Instance;
             tower = Tower.Instance;
             blockQueue = BlockQueue.Instance;
         }

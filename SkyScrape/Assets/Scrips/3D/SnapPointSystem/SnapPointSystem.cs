@@ -16,6 +16,8 @@ namespace Version3D{
         private int blocksForMovement = 16;
 
         private void Start() {
+            PlayerController.OnCheckLayer += CheckLayer;
+
             foreach (Transform child in transform) {
                 if(child.gameObject.GetComponent<SnapPointSystemLayer>() != null) {
                     layer.Add(child.gameObject.GetComponent<SnapPointSystemLayer>());

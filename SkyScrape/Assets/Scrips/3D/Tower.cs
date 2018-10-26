@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Version3D {
     public class Tower : MonoBehaviour {
-
-        public List<GameObject> playedBlocks = new List<GameObject>();
         private SnapPointSystem snapSystem;
 
         private static Tower instance = null;
@@ -27,7 +25,7 @@ namespace Version3D {
                     Debug.Log("Could not locate an Tower object.  Tower was Generated Automaticly.");
                 }
                 return instance;
-            }
+            } 
         }
 
 
@@ -38,16 +36,6 @@ namespace Version3D {
 
         private void OnTriggerEnter(Collider collision) {
             InitManager.Instance.lifes--;
-        }
-
-
-        public void CheckLayer() {
-            snapSystem.CheckLayer();
-            foreach(GameObject rb in playedBlocks) {
-                if(rb != null) {
-                    rb.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-                }              
-            }
         }
     }
 }
